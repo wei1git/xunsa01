@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .box {
+      display: flex;
+    }
+  </style>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/fabric.js/2.4.6/fabric.min.js"></script>
+</head>
+
+<body>
+  <div class="box">
+    <canvas id="canvas" width="350" height="300">
+      <div id="my-image"></div>
+    </canvas>
+    <canvas id="c2" width="350" height="300"></canvas>
+    <canvas id="c" width="350" height="300"></canvas>
+  </div>
+  <canvas id="c4" width="350" height="300"></canvas>
+
+
+</body>
+<script>
+  const card = new fabric.Canvas('canvas', {
+    backgroundColor: '#00faf0' // 画布背景色为蓝色
+  });
+
+  // ...这里可以写canvas对象的一些配置,后面将会介绍
+
+  var rect = new fabric.Rect({
+    left: 100,
+    top: 100,
+    fill: 'red',
+    width: 20,
+    height: 20
+  });
+
+  var line = new fabric.Line([10, 10, 100, 100], {
+    fill: 'green',
+    stroke: 'green'
+  });
+
+  var circle = new fabric.Circle({
+    radius: 20,
+    fill: 'green',
+    left: 100,
+    top: 100
+  });
+
+  var ellipse = new fabric.Ellipse({
+    rx: 45,
+    ry: 80,
+    fill: 'yellow',
+    stroke: 'red',
+    strokeWidth: 3,
+    angle: 30,
+    left: 100,
+    top: 100
+  });
+
+
+  card.add(rect, line, circle, ellipse);
+
+  card.item(0); // reference fabric.Rect added earlier (first object)
+  card.getObjects();
+  card.remove(rect);
+  console.log('小优', card.item(0), card.getObjects())
+
+
+  var circle = new fabric.Circle({
+    radius: 20,
+    left: 100,
+    top: 100,
+    angle: 45,
+    startAngle: 0,
+    endAngle: Math.PI,
+    stroke: '#000',
+    strokeWidth: 3,
+    fill: ''
+  });
+  card.add(circle);
+
+
+  fabric.Image.fromURL('./dz_01.png', function (oImg) {
+    // scale image down, and flip it, before adding it onto card
+    oImg.scale(1.5);
+    card.add(oImg);
+  });
+
+
+  var path = new fabric.Path('M 0 0 L 40 0 L 40 40 z');
+  path.set({
+    left: 120,
+    top: 120
+  });
+  card.add(path);
+
+  path.set({
+    fill: 'red',
+    stroke: 'green',
+    opacity: 0.8
+  });
+
+  var circle = new fabric.Circle({
+    radius: 100,
+    fill: 'green',
+    scaleY: 0.5,
+    // opacity: 0.5,
+    originX: 'center',
+    originY: 'center'
+  });
+  var rect = new fabric.Rect({
+    fill: 'red',
+    width: 20,
+    height: 20
+  });
+
+  var text = new fabric.Text('hello world', {
+    fontSize: 30,
+    originX: 'center',
+    originY: 'center'
+  });
+
+  var group = new fabric.Group([circle, rect, text], {
+    left: 150,
+    top: 100,
+    angle: 0
+  });
+
+  group.item(2).set({
+    text: 'trololo',
+    fill: 'white'
+  });
+
+  card.add(group);
+
+  JSON.stringify(card);
+
+  // 如果<card>标签没设置宽高,可以通过js动态设置
+  card.on('object:modified', (e) => {
+    console.log(e.target, "监听移动旋转") // e.target为当前编辑的Object
+    // ...旋转,缩放,移动等编辑图层的操作都监听到
+    // 所以如果有撤销/恢复的场景,这里可以保存编辑状态
+  });
+</script>
+
+<script>
+  const canvas = new fabric.Canvas('c2', {
+    backgroundColor: '#c3d08b' // 画布背景色为蓝色
+  });
+
+  canvas.add(new fabric.Rect({
+    width: 50,
+    height: 50,
+    fill: '#77f',
+    top: 100,
+    left: 100
+  }));
+  canvas.item(0).lockRotation = true;
+  // this.__canvases.push(canvas);
+
+  canvas.add(new fabric.Rect({
+    width: 50,
+    height: 50,
+    fill: 'red',
+    top: 150,
+    left: 150
+  }));
+  canvas.item(1).lockScalingX = canvas.item(1).lockScalingY = true;
+
+  canvas.add(new fabric.Circle({
+    radius: 30,
+    fill: 'orange',
+    top: 100,
+    left: 100
+  }));
+  canvas.backgroundColor = 'rgba(0,0,255,0.3)';
+  canvas.renderAll();
+
+  canvas.add(new fabric.Circle({
+    radius: 30,
+    fill: 'yellow',
+    top: 100,
+    left: 100
+  }));
+  canvas.add(new fabric.Rect({
+    left: 50,
+    top: 50,
+    fill: 'green',
+    width: 30,
+    height: 30
+  }));
+  canvas.add(new fabric.Rect({
+    left: 150,
+    top: 50,
+    fill: 'green',
+    width: 30,
+    height: 30
+  }));
+  canvas.add(new fabric.Rect({
+    left: 150,
+    top: 150,
+    fill: 'green',
+    width: 30,
+    height: 30
+  }));
+  canvas.add(new fabric.Rect({
+    left: 50,
+    top: 150,
+    fill: 'green',
+    width: 30,
+    height: 30
+  }));
+
+  canvas.item(3).selectable = false;
+</script>
+
+<script>
+  (function () {
+    var canvas = this.__canvas = new fabric.Canvas('c', {
+      selection: false
+    });
+    fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
+
+    function makeCircle(left, top, line1, line2, line3, line4) {
+      var c = new fabric.Circle({
+        left: left,
+        top: top,
+        strokeWidth: 5,
+        radius: 12,
+        fill: '#fff',
+        stroke: '#666'
+      });
+      c.hasControls = c.hasBorders = false;
+
+      c.line1 = line1;
+      c.line2 = line2;
+      c.line3 = line3;
+      c.line4 = line4;
+
+      return c;
+    }
+
+    function makeLine(coords) {
+      return new fabric.Line(coords, {
+        fill: 'red',
+        stroke: 'red',
+        strokeWidth: 5,
+        selectable: false
+      });
+    }
+
+    var line = makeLine([250, 125, 250, 175]),
+      line2 = makeLine([250, 175, 250, 250]),
+      line3 = makeLine([250, 250, 300, 350]),
+      line4 = makeLine([250, 250, 200, 350]),
+      line5 = makeLine([250, 175, 175, 225]),
+      line6 = makeLine([250, 175, 325, 225]);
+
+    canvas.add(line, line2, line3, line4, line5, line6);
+
+    canvas.add(
+      makeCircle(line.get('x1'), line.get('y1'), null, line),
+      makeCircle(line.get('x2'), line.get('y2'), line, line2, line5, line6),
+      makeCircle(line2.get('x2'), line2.get('y2'), line2, line3, line4),
+      makeCircle(line3.get('x2'), line3.get('y2'), line3),
+      makeCircle(line4.get('x2'), line4.get('y2'), line4),
+      makeCircle(line5.get('x2'), line5.get('y2'), line5),
+      makeCircle(line6.get('x2'), line6.get('y2'), line6)
+    );
+
+    canvas.on('object:moving', function (e) {
+      var p = e.target;
+      p.line1 && p.line1.set({
+        'x2': p.left,
+        'y2': p.top
+      });
+      p.line2 && p.line2.set({
+        'x1': p.left,
+        'y1': p.top
+      });
+      p.line3 && p.line3.set({
+        'x1': p.left,
+        'y1': p.top
+      });
+      p.line4 && p.line4.set({
+        'x1': p.left,
+        'y1': p.top
+      });
+      canvas.renderAll();
+    });
+  })();
+</script>
+
+<script>
+  var c4 = new fabric.Canvas('c4');
+
+  c4.setBackgroundColor("rgba(255,0,0,0.5)")
+
+  // create a rectangle with angle=45
+  var rect = new fabric.Rect({
+    left: 100,
+    top: 100,
+    fill: 'red',
+    width: 20,
+    height: 20,
+    angle: 45
+  });
+
+  var circle = new fabric.Circle({
+    radius: 100,
+    fill: 'green',
+    scaleY: 0.5,
+    // opacity: 0.5,
+    originX: 'center',
+    originY: 'center'
+  });
+
+  var text = new fabric.Rect({
+    fill: 'red',
+    width: 20,
+    height: 20
+  });
+  1
+  var group = new fabric.Group([circle, text], {
+    left: 150,
+    top: 100,
+    angle: -10
+  });
+
+  c4.add(group);
+
+  rect.on('selected', function () {
+    console.log('你点击了我')
+  })
+  c4.add(rect);
+
+  console.log(JSON.stringify(c4.toJSON()))
+</script>
+
+</html>
