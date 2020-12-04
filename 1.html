@@ -21,10 +21,15 @@
     <canvas id="c2" width="350" height="300"></canvas>
     <canvas id="c" width="350" height="300"></canvas>
   </div>
-  <canvas id="c4" width="350" height="300"></canvas>
+  <div class="box">
+    <canvas id="c4" width="350" height="300"></canvas>
+    <canvas id="c5" width="350" height="300"></canvas>
+  </div>
 
 
 </body>
+<!-- 第一个 -->
+
 <script>
   const card = new fabric.Canvas('canvas', {
     backgroundColor: '#00faf0' // 画布背景色为蓝色
@@ -67,10 +72,9 @@
   card.add(rect, line, circle, ellipse);
 
   card.item(0); // reference fabric.Rect added earlier (first object)
-  card.getObjects();
-  card.remove(rect);
-  console.log('小优', card.item(0), card.getObjects())
-
+  card.getObjects(); // 获取所有对象
+  // card.remove(rect);  
+  console.log('小优', card.item(0), card.getObjects());
 
   var circle = new fabric.Circle({
     radius: 20,
@@ -149,6 +153,7 @@
   });
 </script>
 
+<!-- 第二个 -->
 <script>
   const canvas = new fabric.Canvas('c2', {
     backgroundColor: '#c3d08b' // 画布背景色为蓝色
@@ -180,7 +185,7 @@
     left: 100
   }));
   canvas.backgroundColor = 'rgba(0,0,255,0.3)';
-  canvas.renderAll();
+  // canvas.renderAll();
 
   canvas.add(new fabric.Circle({
     radius: 30,
@@ -217,9 +222,10 @@
     height: 30
   }));
 
-  canvas.item(3).selectable = false;
+  // canvas.item(3).selectable = false;
 </script>
 
+<!-- 第三个 -->
 <script>
   (function () {
     var canvas = this.__canvas = new fabric.Canvas('c', {
@@ -297,34 +303,42 @@
   })();
 </script>
 
+<!-- 第四个 -->
 <script>
   var c4 = new fabric.Canvas('c4');
 
   c4.setBackgroundColor("rgba(255,0,0,0.5)")
 
   // create a rectangle with angle=45
-  var rect = new fabric.Rect({
-    left: 100,
-    top: 100,
-    fill: 'red',
-    width: 20,
-    height: 20,
-    angle: 45
-  });
+  // var rect = new fabric.Rect({
+  //   left: 100,
+  //   top: 100,
+  //   fill: 'red',
+  //   width: 20,
+  //   height: 20,
+  //   angle: 45
+  // });
+
+  // rect.on('selected', function () {
+  //   console.log('你点击了我')
+  // })
+  // c4.add(rect);
 
   var circle = new fabric.Circle({
     radius: 100,
     fill: 'green',
     scaleY: 0.5,
+    left: 0
     // opacity: 0.5,
-    originX: 'center',
-    originY: 'center'
+    // originX: 'left',
+    // originY: 'center'
   });
 
   var text = new fabric.Rect({
     fill: 'red',
     width: 20,
-    height: 20
+    height: 20,
+    left: -40
   });
   1
   var group = new fabric.Group([circle, text], {
@@ -333,14 +347,70 @@
     angle: -10
   });
 
+  // group.item(0).set('fill', 'red');
+
   c4.add(group);
 
-  rect.on('selected', function () {
-    console.log('你点击了我')
-  })
-  c4.add(rect);
+  group.addWithUpdate(new fabric.Rect({
+    fill: "blue",
+    width: 30,
+    height: 30,
+    left: 15,
+    top: 15,
+    originX: 'center',
+    originY: "center"
+  }));
+  console.log('group.get(left)', group.get('left'))
+
+  group.addWithUpdate(new fabric.Rect({
+    fill: "yellow",
+    width: 30,
+    height: 30,
+    left: group.get('left') + 15,
+    top: group.get('top') + 15,
+    originX: 'center',
+    originY: "center"
+  }))
+
 
   console.log(JSON.stringify(c4.toJSON()))
+</script>
+
+<!-- 第五个 -->
+<script>
+  var c5 = new fabric.Canvas('c5');
+  c5.setBackgroundColor("rgba(255,200,0,0.3)")
+
+  var rect = new fabric.Rect({
+    left: 100,
+    top: 100,
+    fill: 'red',
+    width: 20,
+    height: 20,
+    angle: 45
+  });
+  // c5.add(rect);
+  var circle = new fabric.Circle({
+    radius: 30,
+    fill: 'green',
+    top: 50,
+    left: 50
+  });
+
+  c5.add(rect, circle)
+
+  //使用现有(2)个对象的副本创建一个组
+  // var group = new fabric.Group([
+  //   card.item(0).clone(), card.item(1).clone()
+  // ]);
+  // card.add(group);
+  console.log(c5.item(0))
+  var group = new fabric.Group([c5.item(0), c5.item(1)], {
+    left: 150,
+    top: 100,
+    angle: 0
+  })
+  c5.add(group)
 </script>
 
 </html>
